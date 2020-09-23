@@ -1,3 +1,21 @@
+# Instagram Clone
+
+## (c) Instagram, 2020
+
+### Tina Sosa
+
+#### Check out my deployed web app:
+
+[Instagram Clone](/ 'Instagram Clone')
+
+#### Check out the backend repo:
+
+[Instagram Clone Backend]https://github.com/amantina05/instagram-clone-backend/ 'Instagram Clone Backend')
+
+#### Marketing copy:
+
+A clone of the social media website Instagram. This project was created by following a Live Stream video from CleverProgrammer YouTube channel.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
