@@ -1,14 +1,14 @@
-import React, { useState } from "react";
-import firebase from "firebase";
-import { storage, db } from "./firebase";
-import "./ImageUpload.css";
-import { Input, Button } from "@material-ui/core";
-
+import React, { useState } from 'react';
+import firebase from 'firebase';
+import { storage, db } from './firebase';
+import './ImageUpload.css';
+import { Input, Button } from '@material-ui/core';
+import axios from './axios';
 const ImageUpload = ({ username }) => {
   const [image, setImage] = useState(null);
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState('');
   const [progress, setProgress] = useState(0);
-  const [caption, setCaption] = useState("");
+  const [caption, setCaption] = useState('');
 
   const handleChange = (e) => {
     if (e.target.files[0]) {
@@ -19,7 +19,7 @@ const ImageUpload = ({ username }) => {
   const handleUpload = () => {
     const uploadTask = storage.ref(`images/${image.name}`).put(image);
     uploadTask.on(
-      "state_changed",
+      'state_changed',
       (snapshot) => {
         // progress function ...
         const progress = Math.round(
@@ -34,14 +34,20 @@ const ImageUpload = ({ username }) => {
       () => {
         // complete function ...
         storage
-          .ref("images")
+          .ref('images')
           .child(image.name)
           .getDownloadURL()
           .then((url) => {
             setUrl(url);
 
+            axios.post('/upload', {
+              caption: caption,
+              user: username,
+              image: url,
+            });
+
             // post image inside db
-            db.collection("posts").add({
+            db.collection('posts').add({
               imageUrl: url,
               caption: caption,
               username: username,
@@ -49,7 +55,7 @@ const ImageUpload = ({ username }) => {
             });
 
             setProgress(0);
-            setCaption("");
+            setCaption('');
             setImage(null);
           });
       }
