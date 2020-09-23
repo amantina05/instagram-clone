@@ -6,7 +6,7 @@
 
 #### Check out my deployed web app:
 
-[Instagram Clone](/ 'Instagram Clone')
+[Instagram Clone](https://instagram-clone-8e3d5.web.app/ 'Instagram Clone')
 
 #### Check out the backend repo:
 
