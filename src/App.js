@@ -89,7 +89,7 @@ function App() {
   useEffect(() => {
     fetchPosts();
   }, []);
-  console.log('posts aree -->', posts);
+  // console.log('posts aree -->', posts);
 
   const handleLogin = (e) => {
     e.preventDefault();
