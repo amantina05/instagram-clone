@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
-import "./App.css";
-import Post from "./Post";
-import ImageUpload from "./ImageUpload";
-import { db, auth } from "./firebase";
-import { Button, Avatar, makeStyles, Modal, Input } from "@material-ui/core";
-import FlipMove from "react-flip-move";
-import InstagramEmbed from "react-instagram-embed";
+import React, { useState, useEffect } from 'react';
+import './App.css';
+import Post from './Post';
+import ImageUpload from './ImageUpload';
+import { db, auth } from './firebase';
+import { Button, Avatar, makeStyles, Modal, Input } from '@material-ui/core';
+import FlipMove from 'react-flip-move';
+import InstagramEmbed from 'react-instagram-embed';
+import axios from './axios';
+import Pusher from 'pusher-js';
 
 function getModalStyle() {
   const top = 50;
   const left = 50;
 
   return {
-    height: "300px",
+    height: '300px',
     top: `${top}%`,
     left: `${left}%`,
     transform: `translate(-${top}%, -${left}%)`,
@@ -21,11 +23,11 @@ function getModalStyle() {
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    position: "absolute",
+    position: 'absolute',
     width: 400,
     height: 200,
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
+    border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
   },
@@ -35,9 +37,9 @@ function App() {
   const classes = useStyles();
   const [modalStyle] = useState(getModalStyle);
   const [posts, setPosts] = useState([]);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
   const [open, setOpen] = useState(false);
   const [registerOpen, setRegisterOpen] = useState(false);
@@ -66,13 +68,28 @@ function App() {
     };
   }, [user, username]);
 
+  const fetchPosts = async () =>
+    await axios.get('/sync').then((response) => {
+      console.log(response);
+      setPosts(response.data);
+    });
+
   useEffect(() => {
-    db.collection("posts")
-      .orderBy("timestamp", "desc")
-      .onSnapshot((snapshot) =>
-        setPosts(snapshot.docs.map((doc) => ({ id: doc.id, post: doc.data() })))
-      );
+    const pusher = new Pusher('a63562cc7402f60abd25', {
+      cluster: 'us2',
+    });
+
+    const channel = pusher.subscribe('posts');
+    channel.bind('inserted', (data) => {
+      console.log('data recieved', data);
+      fetchPosts();
+    });
   }, []);
+
+  useEffect(() => {
+    fetchPosts();
+  }, []);
+  console.log('posts aree -->', posts);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -180,14 +197,14 @@ function App() {
       <div className="app__posts">
         <div className="app__postsLeft">
           <FlipMove>
-            {posts.map(({ id, post }) => (
+            {posts.map((post) => (
               <Post
                 user={user}
-                key={id}
-                postId={id}
-                username={post.username}
+                key={post._id}
+                postId={post._id}
+                username={post.user}
                 caption={post.caption}
-                imageUrl={post.imageUrl}
+                imageUrl={post.image}
               />
             ))}
           </FlipMove>
