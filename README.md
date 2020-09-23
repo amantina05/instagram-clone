@@ -10,7 +10,7 @@
 
 #### Check out the backend repo:
 
-[Instagram Clone Backend]https://github.com/amantina05/instagram-clone-backend/ 'Instagram Clone Backend')
+[Instagram Clone Backend](https://github.com/amantina05/instagram-clone-backend/ 'Instagram Clone Backend')
 
 #### Video Walk-through:
 
